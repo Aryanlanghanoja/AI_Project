@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QA Chat</title>
+</head>
+<body>
+  <h2>Ask a Question about Rajpipla</h2>
+  <input type="text" id="question" placeholder="Enter your question">
+  <button onclick="askQuestion()">Ask</button>
+  <p><strong>Answer:</strong> <span id="answer"></span></p>
+
+  <script>
+    async function askQuestion() {
+      const question = document.getElementById("question").value;
+
+      try {
+        const res = await fetch("http://127.0.0.1:8080/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await res.json();
+        document.getElementById("answer").textContent = data.answer || "No answer found.";
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("answer").textContent = "Failed to connect to server.";
+      }
+    }
+  </script>
+</body>
+</html>
