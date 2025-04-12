@@ -1,0 +1,13 @@
+from flask import Flask, jsonify, request  # type: ignore
+import server.load_dependencies
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Welcome to the ITIHAS : A Chatbot For Historical Place API"
+
+if __name__ == "__main__":
+    print("Starting Python Flask Server For Home Price Prediction....")
+    server.load_dependencies.Load_Model()
+    app.run()
