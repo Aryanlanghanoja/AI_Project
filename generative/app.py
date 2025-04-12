@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Load the QA model
-qa_pipeline = pipeline("question-answering")
+qa_pipeline = pipeline("question-answering", model="deepset/roberta-base-squad2")
 
 # Sample context
 context = """
