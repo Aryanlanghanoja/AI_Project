@@ -1,11 +1,12 @@
-from flask import Flask, jsonify, request  # type: ignore
+from flask import Flask, jsonify, request, render_template  # type: ignore
 import server.load_dependencies
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Welcome to the ITIHAS : A Chatbot For Historical Place API"
+    # return "Welcome to the ITIHAS : A Chatbot For Historical Place API"
+    return render_template("/index.html")
 
 @app.route("/predict_answer" , methods = ["POST"])
 def Response_Question() :
@@ -16,7 +17,6 @@ def Response_Question() :
             "answer" : answer
         }   
     )
-
 
     response.headers.add("Access-Control-Allow-Origin", "*")
 
