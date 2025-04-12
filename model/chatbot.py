@@ -16,7 +16,6 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 # Compute embeddings for predefined questions
 question_embeddings = model.encode(questions, convert_to_tensor=True)
 
-
 # Save the model, embeddings, and data as a PKL file
 with open("chatbot_model.pkl", "wb") as f:
     pickle.dump({"model": model, "questions": questions, "answers": answers, "embeddings": question_embeddings}, f)
