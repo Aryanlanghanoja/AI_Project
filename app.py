@@ -17,7 +17,6 @@ def Response_Question() :
         }   
     )
 
-
     response.headers.add("Access-Control-Allow-Origin", "*")
 
     return response
