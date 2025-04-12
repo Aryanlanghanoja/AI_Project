@@ -7,6 +7,21 @@ app = Flask(__name__)
 def home():
     return "Welcome to the ITIHAS : A Chatbot For Historical Place API"
 
+@app.route("/predict_answer" , methods = ["POST"])
+def Response_Question() :
+    question = request.form.get("question")
+    answer = server.load_dependencies.Get_Response(question)
+    response = jsonify(
+        {
+            "answer" : answer
+        }   
+    )
+
+
+    response.headers.add("Access-Control-Allow-Origin", "*")
+
+    return response
+
 if __name__ == "__main__":
     print("Starting Python Flask Server For Home Price Prediction....")
     server.load_dependencies.Load_Model()
