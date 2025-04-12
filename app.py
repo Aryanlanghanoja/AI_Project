@@ -5,7 +5,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    # return "Welcome to the ITIHAS : A Chatbot For Historical Place API"
     return render_template("/index.html")
 
 @app.route("/predict_answer" , methods = ["POST"])
