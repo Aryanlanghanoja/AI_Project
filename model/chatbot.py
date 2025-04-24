@@ -17,12 +17,12 @@ def speak(text):
 def listen():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
-        print("🎤 Speak your question:")
+        print("Speak your question:")
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
     try:
         query = recognizer.recognize_google(audio)
-        print(f"🗣️ You said: {query}")
+        print(f"You said: {query}")
         return query
     except sr.UnknownValueError:
         print("Sorry, I couldn't understand your speech.")
@@ -32,7 +32,7 @@ def listen():
         return ""
 
 # --------- Load Model/Data ---------
-with open("chatbot_model.pkl", "rb") as f:
+with open("./chatbot_model.pkl", "rb") as f:
     data = pickle.load(f)
 
 model = data["model"]
@@ -43,7 +43,7 @@ question_embeddings = data["embeddings"]
 # --------- Main Loop ---------
 while True:
     user_input = listen()
-    if user_input.lower() in ["exit", "quit", "bye"]:
+    if user_input.lower() in ["exit", "quit", "bye","thanks","thank you"]:
         speak("Goodbye!")
         break
 

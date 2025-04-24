@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude-like Chat Interface</title>
+    <title>ITIHAS</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <style>
-        :root {
+         :root {
             --primary-color: #6B46C1;
             --bg-color: #F9FAFB;
             --text-color: #1A202C;
@@ -16,13 +17,13 @@
             --border-radius: 12px;
             --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: var(--font-family);
             background-color: var(--bg-color);
@@ -31,7 +32,7 @@
             flex-direction: column;
             height: 100vh;
         }
-
+        
         .header {
             display: flex;
             justify-content: space-between;
@@ -40,30 +41,30 @@
             border-bottom: 1px solid var(--light-gray);
             background-color: white;
         }
-
+        
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
+        
         .logo-icon {
             width: 32px;
             height: 32px;
             background-color: var(--primary-color);
             border-radius: 8px;
         }
-
+        
         .logo-text {
             font-size: 18px;
             font-weight: 600;
         }
-
+        
         .nav-buttons {
             display: flex;
             gap: 12px;
         }
-
+        
         .nav-button {
             padding: 8px 12px;
             background: none;
@@ -73,11 +74,11 @@
             cursor: pointer;
             color: var(--dark-gray);
         }
-
+        
         .nav-button:hover {
             background-color: var(--light-gray);
         }
-
+        
         .sidebar-toggle {
             background: none;
             border: none;
@@ -85,13 +86,13 @@
             color: var(--dark-gray);
             font-size: 16px;
         }
-
+        
         .main-container {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
-
+        
         .sidebar {
             width: 250px;
             background-color: white;
@@ -101,7 +102,7 @@
             flex-direction: column;
             gap: 16px;
         }
-
+        
         .new-chat-btn {
             display: flex;
             align-items: center;
@@ -114,37 +115,37 @@
             font-weight: 600;
             cursor: pointer;
         }
-
+        
         .chats-container {
             flex: 1;
             overflow-y: auto;
         }
-
+        
         .chat-item {
             padding: 12px;
             border-radius: var(--border-radius);
             margin-bottom: 8px;
             cursor: pointer;
         }
-
+        
         .chat-item:hover {
             background-color: var(--light-gray);
         }
-
+        
         .chat-title {
             font-size: 14px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
+        
         .content {
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-
+        
         .messages-container {
             flex: 1;
             padding: 24px;
@@ -153,25 +154,25 @@
             flex-direction: column;
             gap: 24px;
         }
-
+        
         .message {
             max-width: 80%;
             padding: 16px;
             border-radius: var(--border-radius);
             line-height: 1.5;
         }
-
+        
         .human-message {
             align-self: flex-end;
             background-color: #E9D8FD;
         }
-
+        
         .assistant-message {
             align-self: flex-start;
             background-color: white;
             border: 1px solid var(--light-gray);
         }
-
+        
         .message-header {
             display: flex;
             align-items: center;
@@ -180,25 +181,25 @@
             font-weight: 600;
             color: var(--dark-gray);
         }
-
+        
         .message-content {
             font-size: 16px;
             height: auto;
         }
-
+        
         .input-container {
             padding: 24px;
             border-top: 1px solid var(--light-gray);
             background-color: white;
         }
-
+        
         .input-box {
             display: flex;
             border: 1px solid var(--light-gray);
             border-radius: var(--border-radius);
             overflow: hidden;
         }
-
+        
         .message-input {
             flex: 1;
             padding: 16px;
@@ -210,7 +211,7 @@
             font-family: var(--font-family);
             font-size: 16px;
         }
-
+        
         .send-button {
             background-color: var(--primary-color);
             color: white;
@@ -219,12 +220,12 @@
             cursor: pointer;
             font-weight: 600;
         }
-
+        
         .send-button:disabled {
             background-color: var(--medium-gray);
             cursor: not-allowed;
         }
-
+        
         .style-dropdown {
             margin-top: 12px;
             padding: 8px;
@@ -232,7 +233,7 @@
             border: 1px solid var(--light-gray);
             font-family: var(--font-family);
         }
-
+        
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -240,6 +241,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <button class="sidebar-toggle">☰</button>
@@ -254,7 +256,7 @@
         <div class="content">
             <div class="messages-container" id="messages-container">
                 <div class="message assistant-message">
-                    
+
                     <div class="message-content">
                         Hello! I'm ITIHAS, an AI assistant. How can I help you today?
                     </div>
@@ -280,19 +282,19 @@
 
         // Sample responses based on style
         const responseStyles = {
-         normal: "I appreciate your question. Here's what I can tell you about that...",
-         professional: "Thank you for your inquiry. Upon analysis, I can provide the following information...",
-         casual: "Hey there! Great question! So here's the deal...",
-         academic: "Upon examination of this query, several pertinent factors emerge for consideration..."
+            normal: "I appreciate your question. Here's what I can tell you about that...",
+            professional: "Thank you for your inquiry. Upon analysis, I can provide the following information...",
+            casual: "Hey there! Great question! So here's the deal...",
+            academic: "Upon examination of this query, several pertinent factors emerge for consideration..."
         };
 
         // Auto-resize textarea
         messageInput.addEventListener('input', () => {
-         messageInput.style.height = 'auto';
-         messageInput.style.height = messageInput.scrollHeight + 'px';
+            messageInput.style.height = 'auto';
+            messageInput.style.height = messageInput.scrollHeight + 'px';
 
-         // Enable/disable send button based on content
-         sendButton.disabled = messageInput.value.trim() === '';
+            // Enable/disable send button based on content
+            sendButton.disabled = messageInput.value.trim() === '';
         });
 
         // Send message on button click
@@ -300,17 +302,17 @@
 
         // Send message on Enter key (but allow Shift+Enter for new line)
         messageInput.addEventListener('keydown', (e) => {
-         if (e.key === 'Enter' && !e.shiftKey) {
-             e.preventDefault();
-             if (!sendButton.disabled) {
-                 sendMessage();
-             }
-         }
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!sendButton.disabled) {
+                    sendMessage();
+                }
+            }
         });
 
         // Toggle sidebar on mobile
         sidebarToggle.addEventListener('click', () => {
-         sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
+            sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
         });
 
         // Handle sending messages
@@ -347,21 +349,21 @@
 
         // Add message to the chat
         function addMessage(text, sender) {
-         const messageDiv = document.createElement('div');
-         messageDiv.className = `message ${sender}-message`;
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
 
-         const headerDiv = document.createElement('div');
-         headerDiv.className = 'message-header';
-        //  headerDiv.textContent = sender === 'human' ? 'You' : 'Claude';
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'message-header';
+            //  headerDiv.textContent = sender === 'human' ? 'You' : 'Claude';
 
-         const contentDiv = document.createElement('div');
-         contentDiv.className = 'message-content';
-         contentDiv.textContent = text;
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = text;
 
-         messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(contentDiv);
 
-         messagesContainer.appendChild(messageDiv);
-         return messageDiv;
+            messagesContainer.appendChild(messageDiv);
+            return messageDiv;
         }
 
         // Generate a simple response based on the message
@@ -390,4 +392,5 @@
         messageInput.style.height = 'auto';
     </script>
 </body>
+
 </html>
