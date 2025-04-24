@@ -234,6 +234,19 @@
             font-family: var(--font-family);
         }
         
+        .mic-button {
+            background: none;
+            border: none;
+            padding: 0 16px;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--dark-gray);
+        }
+        
+        .mic-button.listening {
+            color: red;
+        }
+        
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -266,6 +279,7 @@
 
             <div class="input-container">
                 <div class="input-box">
+                    <button id="mic-button" class="mic-button">🎤</button>
                     <textarea class="message-input" id="message-input" placeholder="Ask Question..." rows="1"></textarea>
                     <button class="send-button" id="send-button" disabled>Send</button>
                 </div>
@@ -279,28 +293,58 @@
         const sendButton = document.getElementById('send-button');
         const sidebarToggle = document.querySelector('.sidebar-toggle');
         const sidebar = document.querySelector('.sidebar');
+        const micButton = document.getElementById('mic-button'); // New mic button
 
-        // Sample responses based on style
-        const responseStyles = {
-            normal: "I appreciate your question. Here's what I can tell you about that...",
-            professional: "Thank you for your inquiry. Upon analysis, I can provide the following information...",
-            casual: "Hey there! Great question! So here's the deal...",
-            academic: "Upon examination of this query, several pertinent factors emerge for consideration..."
+        // Speech Recognition Setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        micButton.addEventListener('click', () => {
+            if (micButton.classList.contains('listening')) {
+                recognition.stop();
+                micButton.classList.remove('listening');
+            } else {
+                recognition.start();
+                micButton.classList.add('listening');
+            }
+        });
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            messageInput.value = transcript;
+            sendButton.disabled = false;
+            micButton.classList.remove('listening');
+            sendMessage(); // Auto-send on voice input
         };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            micButton.classList.remove('listening');
+        };
+
+        // Text-to-Speech function
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1;
+            utterance.pitch = 1;
+            synth.speak(utterance);
+        }
 
         // Auto-resize textarea
         messageInput.addEventListener('input', () => {
             messageInput.style.height = 'auto';
             messageInput.style.height = messageInput.scrollHeight + 'px';
-
-            // Enable/disable send button based on content
             sendButton.disabled = messageInput.value.trim() === '';
         });
 
         // Send message on button click
         sendButton.addEventListener('click', sendMessage);
 
-        // Send message on Enter key (but allow Shift+Enter for new line)
+        // Send on Enter (without Shift)
         messageInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -310,7 +354,7 @@
             }
         });
 
-        // Toggle sidebar on mobile
+        // Toggle sidebar
         sidebarToggle.addEventListener('click', () => {
             sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
         });
@@ -320,30 +364,20 @@
             const messageText = messageInput.value.trim();
             if (!messageText) return;
 
-            // Add human message
             addMessage(messageText, 'human');
-
-            // Clear input
             messageInput.value = '';
             messageInput.style.height = 'auto';
             sendButton.disabled = true;
 
-            // Simulate typing indicator
             const loadingMessage = addMessage('Thinking...', 'assistant');
 
-            // Call your backend API
             generateResponse(messageText, function(response) {
-                // Remove loading message
                 messagesContainer.removeChild(loadingMessage);
-
-                // Add AI response
                 addMessage(response, 'assistant');
-
-                // Scroll to bottom
+                speak(response); // Speak the response
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             });
 
-            // Scroll to bottom after sending message
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
@@ -352,23 +386,18 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}-message`;
 
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'message-header';
-            //  headerDiv.textContent = sender === 'human' ? 'You' : 'Claude';
-
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
             contentDiv.textContent = text;
 
             messageDiv.appendChild(contentDiv);
-
             messagesContainer.appendChild(messageDiv);
             return messageDiv;
         }
 
-        // Generate a simple response based on the message
+        // Generate a simple response from Flask backend
         function generateResponse(message, callback) {
-            var url = "http://127.0.0.1:5000/predict_answer";
+            const url = "http://127.0.0.1:5000/predict_answer";
 
             $.ajax({
                 type: "POST",
@@ -378,13 +407,13 @@
                 },
                 success: function(data) {
                     console.log("Response received:", data);
-                    callback(data.answer); // Use the answer from the response
+                    callback(data.answer);
                 },
                 error: function(xhr, status, error) {
                     console.error("API error:", error);
                     callback("Sorry, I couldn't process your request at the moment. Please try again later.");
                 },
-                timeout: 10000 // 10 second timeout
+                timeout: 10000
             });
         }
 
