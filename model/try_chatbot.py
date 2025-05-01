@@ -3,7 +3,7 @@ import pickle
 from sentence_transformers import SentenceTransformer, util
 
 # Load the trained model from the pickle file
-with open("chatbot_model.pkl", "rb") as f:
+with open("ict_chatbot_model.pkl", "rb") as f:
     data = pickle.load(f)
 
 model = data["model"]
