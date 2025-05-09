@@ -16,7 +16,7 @@ def Load_Model():
     print("Loading Saved Model... Start")
 
     if __loaded_model is None:
-        with open("./model/chatbot_model.pkl", "rb") as f:
+        with open("./model/ict_chatbot_model.pkl", "rb") as f:
             __loaded_model = pickle.load(f)
             f.close()
 
