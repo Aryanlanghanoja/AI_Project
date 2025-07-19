@@ -5,11 +5,18 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("/index.html")
+    return render_template("index.html")
 
 @app.route("/predict_answer" , methods = ["POST"])
 def Response_Question() :
+    print(request)
     question = request.form.get("question")
+    if not question:
+        return jsonify({
+            "error": "Question field is required",
+            "answer": None
+        }), 400
+        
     answer = server.load_dependencies.Get_Response(question)
     response = jsonify(
         {
@@ -18,7 +25,6 @@ def Response_Question() :
     )
 
     response.headers.add("Access-Control-Allow-Origin", "*")
-
     return response
 
 if __name__ == "__main__":
