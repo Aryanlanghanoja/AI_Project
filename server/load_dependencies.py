@@ -35,5 +35,5 @@ def Get_Response(question):
 
 if __name__ == "__main__":
     Load_Model()
-    # question = "Hello, how can you help me?"  # example
-    # print(Get_Response(question))
+    question = "Hello, how can you help me?"  # example
+    print(Get_Response(question))
